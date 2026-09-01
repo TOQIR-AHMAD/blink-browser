@@ -8,6 +8,7 @@
 #include "tabs/tab_model.h"
 
 #include <QtCore/QDateTime>
+#include <algorithm>
 #include <QtCore/QVariantMap>
 
 namespace pb::browser {
@@ -57,6 +58,32 @@ QVariantList WindowController::completions(const QString &query, int limit) cons
         item[QStringLiteral("url")] = url;
         item[QStringLiteral("title")] = QString::fromStdString(entry.title);
         item[QStringLiteral("host")] = url.host();
+        list.append(item);
+    }
+    return list;
+}
+
+QVariantList WindowController::topSites(int limit) const
+{
+    QVariantList list;
+    if (m_privateMode || !m_browser || limit <= 0)
+        return list;
+
+    std::vector<HistoryEntry> entries = m_browser->history().entries();
+    std::stable_sort(entries.begin(), entries.end(),
+                     [](const HistoryEntry &a, const HistoryEntry &b) {
+                         return a.visitCount > b.visitCount;
+                     });
+
+    for (const HistoryEntry &entry : entries) {
+        if (list.size() >= limit)
+            break;
+        const QUrl url(QString::fromStdString(entry.url));
+        QVariantMap item;
+        item[QStringLiteral("url")] = url;
+        item[QStringLiteral("title")] = QString::fromStdString(entry.title);
+        item[QStringLiteral("host")] = url.host().startsWith(QLatin1String("www."))
+                ? url.host().mid(4) : url.host();
         list.append(item);
     }
     return list;

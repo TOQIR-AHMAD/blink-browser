@@ -117,6 +117,7 @@ target_link_libraries(pb_browser
         Qt6::Gui
         Qt6::Network
         Qt6::Quick
+        Qt6::QuickControls2
         Qt6::WebEngineQuick
 )
 

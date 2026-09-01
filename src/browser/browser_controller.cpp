@@ -21,7 +21,7 @@ QVariant WindowListModel::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> WindowListModel::roleNames() const
 {
-    return { { WindowRole, QByteArrayLiteral("window") } };
+    return { { WindowRole, QByteArrayLiteral("controller") } };
 }
 
 void WindowListModel::append(WindowController *window)

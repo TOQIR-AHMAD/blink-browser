@@ -46,6 +46,10 @@ public:
     // request (PLAN.md §10). Each entry is {url, title, host}.
     Q_INVOKABLE QVariantList completions(const QString &query, int limit = 6) const;
 
+    // The most-visited pages of this session, for the new-tab page. Same
+    // source as the completions: memory, this session, non-private windows.
+    Q_INVOKABLE QVariantList topSites(int limit = 6) const;
+
     // Called by the QML view when a page finishes loading. Ignored for private
     // windows.
     Q_INVOKABLE void recordVisit(const QUrl &url, const QString &title);

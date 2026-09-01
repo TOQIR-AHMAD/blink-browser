@@ -1,13 +1,34 @@
-# All QML lives in one module, PrivacyBrowser.Ui. Reusable glass components
-# (components/), pages (pages/) and the theme singletons (theme/) are added to
-# this module in later phases.
+# The QML side of the browser.
+#
+# Four modules, one per directory, so each type's module URI matches where the
+# file lives:
+#
+#   PrivacyBrowser.Ui             the window shell (this directory)
+#   PrivacyBrowser.Ui.Theme       design tokens, as singletons
+#   PrivacyBrowser.Ui.Components  the reusable glass components
+#   PrivacyBrowser.Ui.Pages       the full-page views
+add_subdirectory(theme)
+add_subdirectory(components)
+add_subdirectory(pages)
+
 qt_add_library(pb_ui STATIC)
 
 qt_add_qml_module(pb_ui
     URI PrivacyBrowser.Ui
     VERSION 1.0
     QML_FILES
+        BrowserWindow.qml
         Main.qml
+    RESOURCES
+        assets/icon.png
 )
 
-target_link_libraries(pb_ui PRIVATE Qt6::Quick Qt6::QuickControls2)
+target_link_libraries(pb_ui
+    PRIVATE
+        Qt6::Quick
+        Qt6::QuickControls2
+        Qt6::WebEngineQuick
+        pb_ui_componentsplugin
+        pb_ui_pagesplugin
+        pb_ui_themeplugin
+)

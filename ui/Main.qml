@@ -1,76 +1,61 @@
-// Phase 1: proves the Chromium integration works - one window, one web view,
-// one place to type an address. The tab strip, glass chrome and privacy UI
-// arrive in the phases that follow, at which point this file becomes the
-// window shell only.
+// The root object.
+//
+// It owns nothing visible: it binds the theme to the user's settings and
+// creates one BrowserWindow per window the C++ side reports. Closing the last
+// window ends the process, which is what runs the session cleanup.
 
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import QtWebEngine
+import PrivacyBrowser.Ui.Theme
 
-Window {
+QtObject {
     id: root
 
-    width: 1200
-    height: 800
-    minimumWidth: 480
-    minimumHeight: 360
-    visible: true
-    title: webView.title !== "" ? webView.title : qsTr("Privacy Browser")
-    color: "#101014"
+    readonly property var settings: App.settings
 
-    ColumnLayout {
-        anchors.fill: parent
-        spacing: 0
+    property Instantiator windows: Instantiator {
+        model: App.browser.windows
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.margins: 8
-            spacing: 8
-
-            Button {
-                text: "◀"
-                enabled: webView.canGoBack
-                onClicked: webView.goBack()
-            }
-            Button {
-                text: "▶"
-                enabled: webView.canGoForward
-                onClicked: webView.goForward()
-            }
-            Button {
-                text: webView.loading ? "✕" : "↻"
-                onClicked: webView.loading ? webView.stop() : webView.reload()
-            }
-
-            TextField {
-                id: addressField
-
-                Layout.fillWidth: true
-                placeholderText: qsTr("Enter an address")
-                selectByMouse: true
-                onAccepted: webView.url = text
-
-                Connections {
-                    target: webView
-                    function onUrlChanged() {
-                        if (!addressField.activeFocus)
-                            addressField.text = webView.url.toString();
-                    }
-                }
-            }
+        delegate: BrowserWindow {
+            required property var controller
+            windowController: controller
         }
+    }
 
-        WebEngineView {
-            id: webView
+    // Theme follows the settings; the settings' "system" option follows the
+    // platform's colour scheme.
+    property Binding themeMode: Binding {
+        target: Theme
+        property: "mode"
+        value: root.settings.theme
+    }
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+    property Binding themeMotion: Binding {
+        target: Theme
+        property: "reducedMotion"
+        value: root.settings.reducedMotion
+    }
 
-            // The off-the-record profile built in C++. Binding it here is what
-            // keeps the browser off Qt WebEngine's disk-backed default profile.
-            profile: App.profile
-            url: "about:blank"
-        }
+    property Binding themeGlass: Binding {
+        target: Theme
+        property: "glassEnabled"
+        value: root.settings.glassEffects
+    }
+
+    property Binding themeScale: Binding {
+        target: Theme
+        property: "textScale"
+        value: root.settings.textScale
+    }
+
+    property Binding themeSystemScheme: Binding {
+        target: Theme
+        property: "systemPrefersDark"
+        value: Application.styleHints.colorScheme === Qt.ColorScheme.Dark
+    }
+
+    Component.onCompleted: {
+        // The first window. Everything after this one is created from the UI.
+        if (App.browser.windowCount === 0)
+            App.browser.createWindow(false);
     }
 }
