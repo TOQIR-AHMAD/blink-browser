@@ -1,0 +1,89 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "$env{QT_ROOT_DIR}"
+            }
+        },
+        {
+            "name": "windows-debug",
+            "inherits": "base",
+            "displayName": "Windows - Debug",
+            "description": "Developer build. Requires Qt 6.5+ and an MSVC developer shell.",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "PB_DEV_LOGGING": "ON"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "windows-release",
+            "inherits": "base",
+            "displayName": "Windows - Release",
+            "description": "Release build. Developer-detail logging stays off.",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "PB_DEV_LOGGING": "OFF"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "core-only",
+            "inherits": "base",
+            "displayName": "Core only (no Qt)",
+            "description": "Builds the Qt-free core libraries and their tests. Used when Qt is not installed.",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "PB_BUILD_UI": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "windows-debug",
+            "configurePreset": "windows-debug"
+        },
+        {
+            "name": "windows-release",
+            "configurePreset": "windows-release"
+        },
+        {
+            "name": "core-only",
+            "configurePreset": "core-only"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "windows-debug",
+            "configurePreset": "windows-debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "core-only",
+            "configurePreset": "core-only",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}

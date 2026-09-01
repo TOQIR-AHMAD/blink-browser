@@ -1,0 +1,22 @@
+# Build output
+/build/
+/out/
+CMakeUserPresets.json
+
+# Editors and IDEs
+/.vs/
+/.vscode/
+/.idea/
+*.user
+
+# Qt
+*.qmlc
+*.jsc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
