@@ -334,6 +334,22 @@ Window {
                     }
                 }
 
+                CrashOverlay {
+                    id: crashOverlay
+
+                    anchors.fill: parent
+                    visible: browserWindow.currentTab !== null
+                             && browserWindow.currentTab.crashed
+                    report: App.technicalReport(qsTr("A tab's render process exited."))
+
+                    onReloadRequested: {
+                        if (browserWindow.currentTab) {
+                            browserWindow.currentTab.crashed = false;
+                            browserWindow.currentTab.reload();
+                        }
+                    }
+                }
+
                 CertificateWarning {
                     id: certificateWarning
 

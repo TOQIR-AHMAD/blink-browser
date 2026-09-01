@@ -96,6 +96,9 @@ A privacy-first browser does not make you invisible. Specifically:
   asked for one.
 - `scripts/verify-privacy.ps1` compares your profile folders before and after a
   real browsing session and reports anything left behind.
+- `tests/ui/check_qml_bindings.py` checks that every C++ member the interface
+  reads actually exists, so a renamed property cannot silently blank out a
+  privacy indicator.
 
 **Not yet run:** the runtime checks in the last two items have not been
 executed, because the machine this project was built on cannot compile the Qt

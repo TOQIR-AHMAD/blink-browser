@@ -13,8 +13,11 @@
 #include "tabs/tab_model.h"
 #include "utils/logging.h"
 
+#include <QtCore/QDateTime>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
+#include <QtCore/QStringList>
+#include <QtCore/QSysInfo>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QtGlobal>
 #include <QtQml/QQmlApplicationEngine>
@@ -112,6 +115,43 @@ QString BrowserApplication::chromiumVersion() const
 QString BrowserApplication::qtVersion() const
 {
     return QString::fromLatin1(qVersion());
+}
+
+QString BrowserApplication::technicalReport(const QString &context) const
+{
+    // Everything in here is about the software, not about the person using it.
+    QStringList lines;
+    lines << QStringLiteral("Privacy Browser technical report");
+    lines << QStringLiteral("Generated: %1")
+                 .arg(QDateTime::currentDateTimeUtc().toString(Qt::ISODate));
+    lines << QStringLiteral("Application: %1").arg(version());
+    lines << QStringLiteral("Chromium: %1").arg(chromiumVersion());
+    lines << QStringLiteral("Qt: %1").arg(qtVersion());
+    lines << QStringLiteral("Platform: %1 (%2)")
+                 .arg(QSysInfo::prettyProductName(), QSysInfo::currentCpuArchitecture());
+    lines << QStringLiteral("Kernel: %1 %2")
+                 .arg(QSysInfo::kernelType(), QSysInfo::kernelVersion());
+    if (!context.isEmpty())
+        lines << QStringLiteral("Context: %1").arg(context);
+    lines << QString();
+    lines << QStringLiteral("No addresses, page content, cookies or identifiers are included,");
+    lines << QStringLiteral("and nothing here has been sent anywhere.");
+    return lines.join(QLatin1Char('\n'));
+}
+
+bool BrowserApplication::exportReport(const QUrl &target, const QString &text) const
+{
+    const QString path = target.isLocalFile() ? target.toLocalFile() : target.toString();
+    if (path.isEmpty())
+        return false;
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
+        pb::log::write(pb::log::Level::Error, "could not write the technical report");
+        return false;
+    }
+    file.write(text.toUtf8());
+    return true;
 }
 
 void BrowserApplication::applyConfiguration()

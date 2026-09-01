@@ -12,6 +12,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <QtCore/QUrl>
 #include <QtQml/qqmlregistration.h>
 
 QT_BEGIN_NAMESPACE
@@ -85,6 +86,13 @@ public:
     QString version() const;
     QString chromiumVersion() const;
     QString qtVersion() const;
+
+    // A technical report for the crash screen (PLAN.md §30). Versions and
+    // platform only: no URL, no page content, no identifier. The user reads it
+    // before deciding whether to export it, and nothing is ever sent
+    // automatically.
+    Q_INVOKABLE QString technicalReport(const QString &context) const;
+    Q_INVOKABLE bool exportReport(const QUrl &target, const QString &text) const;
     // True when no settings file exists yet, which is what the welcome screen
     // keys off. It is not a "have you been here before" flag: with settings
     // persistence off (the default) every launch is a first run.

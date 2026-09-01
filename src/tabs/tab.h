@@ -10,6 +10,7 @@
 #define PB_TABS_TAB_H
 
 #include <QtCore/QObject>
+#include <QtCore/QString>
 #include <QtCore/QUrl>
 #include <QtQml/qqmlregistration.h>
 

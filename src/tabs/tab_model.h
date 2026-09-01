@@ -8,6 +8,7 @@
 #define PB_TABS_TAB_MODEL_H
 
 #include <QtCore/QAbstractListModel>
+#include <QtCore/QHash>
 #include <QtCore/QList>
 #include <QtCore/QString>
 #include <QtCore/QUrl>

@@ -86,6 +86,7 @@ cmake --preset core-only && cmake --build --preset core-only && ctest --preset c
 
 ```powershell
 python tests\privacy\audit_sources.py          # no SDKs, no unlisted endpoints
+python tests\ui\check_qml_bindings.py         # the UI reads only members that exist
 ctest --preset core-only                       # blocking, cleanup, policy, settings
 powershell -File scripts\verify-privacy.ps1 -Executable <built exe>   # what it left on disk
 ```

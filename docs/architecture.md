@@ -138,7 +138,7 @@ in C++ and the QML follows.
 | `tests/unit/` | 17 Qt-free test binaries |
 | `tests/integration/` | tabs, windows, history, omnibox (Qt Test) |
 | `tests/privacy/` | the source audit (Python) and the runtime persistence checks (Qt Test) |
-| `tests/ui/` | QML tests for the design system |
+| `tests/ui/` | QML tests for the design system, and the C++/QML binding check |
 | `packaging/windows/` | version resource, icon, Inno Setup script |
 | `scripts/` | environment check, icon generator, packaging, privacy verification |
 
@@ -157,7 +157,7 @@ forbids logs containing URLs, queries, form values or page content.
 | Target | State |
 | --- | --- |
 | `pb_core` and the 17 unit tests | **Built and passing**, with MSVC 2017 via the `core-only` preset |
-| `tests/privacy/audit_sources.py` | **Passing** — runs in every configuration |
+| `audit_sources.py` and `check_qml_bindings.py` | **Passing** — both run in every configuration |
 | `pb_browser`, `PrivacyBrowser`, the QML modules | **Not yet compiled**: Qt 6 is not installed on the development machine, and its MSVC 2017 toolset is below Qt 6's floor |
 | `tests/integration`, `tests/privacy/tst_persistence`, `tests/ui` | Written; run when Qt is available |
 

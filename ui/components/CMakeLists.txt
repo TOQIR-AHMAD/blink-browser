@@ -7,6 +7,7 @@ qt_add_qml_module(pb_ui_components
     QML_FILES
         AddressBar.qml
         CertificateWarning.qml
+        CrashOverlay.qml
         DownloadsPanel.qml
         ErrorOverlay.qml
         GlassButton.qml

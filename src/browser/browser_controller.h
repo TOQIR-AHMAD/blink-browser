@@ -10,6 +10,7 @@
 #include "browser/core/session_history.h"
 
 #include <QtCore/QAbstractListModel>
+#include <QtCore/QHash>
 #include <QtCore/QList>
 #include <QtCore/QObject>
 #include <QtQml/qqmlregistration.h>

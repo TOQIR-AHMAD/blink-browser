@@ -19,6 +19,7 @@
 #include "network/core/network_audit.h"
 
 #include <QtCore/QMutex>
+#include <QtCore/QVariantList>
 #include <QtWebEngineCore/QWebEngineUrlRequestInterceptor>
 
 namespace pb::privacy {

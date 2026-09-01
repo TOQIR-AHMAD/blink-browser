@@ -15,9 +15,11 @@
 #define PB_DOWNLOADS_DOWNLOAD_MANAGER_H
 
 #include <QtCore/QAbstractListModel>
+#include <QtCore/QHash>
 #include <QtCore/QList>
 #include <QtCore/QPointer>
 #include <QtCore/QString>
+#include <QtCore/QUrl>
 #include <QtQml/qqmlregistration.h>
 
 QT_BEGIN_NAMESPACE

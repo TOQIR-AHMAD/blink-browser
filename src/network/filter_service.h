@@ -18,6 +18,7 @@
 
 #include "network/core/filter_engine.h"
 
+#include <QtCore/QHash>
 #include <QtCore/QList>
 #include <QtCore/QObject>
 #include <QtCore/QReadWriteLock>
