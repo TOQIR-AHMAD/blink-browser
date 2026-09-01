@@ -2,15 +2,10 @@ qt_add_executable(PrivacyBrowser
     main.cpp
 )
 
-target_compile_definitions(PrivacyBrowser PRIVATE
-    PB_VERSION="${PROJECT_VERSION}"
-)
-
-# pb_ui is the QML module defined in ui/CMakeLists.txt; linking its plugin
-# target makes the PrivacyBrowser.Ui module available to the engine.
+# pb_uiplugin is the QML module declared in ui/CMakeLists.txt; linking it makes
+# the PrivacyBrowser.Ui module available to the engine.
 target_link_libraries(PrivacyBrowser PRIVATE
-    Qt6::Quick
-    PrivacyBrowser::Utils
+    PrivacyBrowser::Browser
     pb_uiplugin
 )
 
@@ -20,3 +15,10 @@ set_target_properties(PrivacyBrowser PROPERTIES
     WIN32_EXECUTABLE $<NOT:$<CONFIG:Debug>>
     MACOSX_BUNDLE TRUE
 )
+
+# Windows version information (and, from Phase 10, the application icon).
+if(WIN32)
+    configure_file("${CMAKE_SOURCE_DIR}/packaging/windows/app.rc.in"
+                   "${CMAKE_CURRENT_BINARY_DIR}/app.rc" @ONLY)
+    target_sources(PrivacyBrowser PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/app.rc")
+endif()

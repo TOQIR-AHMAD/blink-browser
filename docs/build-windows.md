@@ -10,7 +10,7 @@ Windows 11 is the primary target (PLAN.md §38).
 | Windows SDK | 10.0.20348 or newer | Installed by the C++ workload. |
 | CMake | 3.21 or newer | The CMake bundled with Visual Studio 2017 (3.12) is too old. |
 | Ninja | 1.10 or newer | Ships with the Visual Studio 2022 C++ workload. |
-| Qt | 6.5 or newer, MSVC 2022 64-bit build | 6.8 LTS recommended. Modules: **Qt Quick** and, from Phase 1, **Qt WebEngine**. |
+| Qt | **6.8 LTS** or newer, MSVC 2022 64-bit build | The floor is 6.8: the permission API the browser uses was introduced there. Modules: **Qt Quick**, **Qt Quick Controls** and **Qt WebEngine**. |
 | Python | 3.9+ | Build automation scripts only. |
 | Git | any recent | |
 

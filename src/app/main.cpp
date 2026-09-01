@@ -1,24 +1,32 @@
-// Phase 0 entry point: brings up the Qt/QML shell and shows an empty window.
-// Web content, tabs and the privacy subsystem arrive in later phases.
+// Entry point.
+//
+// Order matters here: the Chromium switches have to be in the environment
+// before Qt WebEngine initialises, and Qt WebEngine has to initialise before
+// the GUI application exists.
 
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-
+#include "app/application.h"
 #include "utils/logging.h"
+
+#include <QtGui/QGuiApplication>
+#include <QtQml/QQmlApplicationEngine>
+#include <QtWebEngineQuick/QtWebEngineQuick>
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
-
-    // Application name and version only. No organization domain and no
-    // installation identifier: PLAN.md section 49 rules out a per-install ID,
-    // and nothing here writes to QSettings or QStandardPaths.
     QGuiApplication::setApplicationName(QStringLiteral("PrivacyBrowser"));
     QGuiApplication::setApplicationVersion(QStringLiteral(PB_VERSION));
+    // No organization domain and no installation identifier (PLAN.md §49).
 
+    pb::app::BrowserApplication::prepareEnvironment();
+    QtWebEngineQuick::initialize();
+
+    QGuiApplication app(argc, argv);
     pb::log::write(pb::log::Level::Info, "PrivacyBrowser " PB_VERSION " starting");
 
+    pb::app::BrowserApplication browser;
+
     QQmlApplicationEngine engine;
+    browser.registerWithEngine(engine);
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
         []() {
@@ -29,6 +37,10 @@ int main(int argc, char *argv[])
     engine.loadFromModule("PrivacyBrowser.Ui", "Main");
 
     const int status = app.exec();
+
+    // Explicit, before static destruction, so a cleanup failure can still be
+    // logged and reported through the exit status.
+    const bool cleaned = browser.shutdown();
     pb::log::write(pb::log::Level::Info, "PrivacyBrowser exiting");
-    return status;
+    return (status == 0 && !cleaned) ? 2 : status;
 }

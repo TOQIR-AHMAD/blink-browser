@@ -98,7 +98,7 @@ content.
 
 ## Dependencies
 
-Current: Qt 6.5+ (Core, Gui, Quick) and, from Phase 1, Qt WebEngine. Nothing
+Current: Qt 6.8+ (Core, Gui, Network, Quick, Quick Controls, WebEngine). Nothing
 else. Tests use plain executables plus CTest so no test framework is needed.
 PLAN.md §45 applies before anything is added.
 

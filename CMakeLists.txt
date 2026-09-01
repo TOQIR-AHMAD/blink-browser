@@ -38,8 +38,17 @@ else()
 endif()
 
 if(PB_BUILD_UI)
-    find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Quick)
-    qt_standard_project_setup(REQUIRES 6.5)
+    # 6.8 is the floor because the browser uses the QWebEnginePermission API
+    # introduced there, and because 6.8 is the current Qt LTS.
+    find_package(Qt6 6.8 REQUIRED COMPONENTS
+        Core
+        Gui
+        Network
+        Quick
+        QuickControls2
+        WebEngineQuick
+    )
+    qt_standard_project_setup(REQUIRES 6.8)
 endif()
 
 if(PB_BUILD_UI)

@@ -11,7 +11,7 @@ build has been performed or verified yet.
 | GCC or Clang | C++17 capable (GCC 11+, Clang 13+) |
 | CMake | 3.21 or newer |
 | Ninja | 1.10 or newer |
-| Qt | 6.5 or newer (`gcc_64` build), Qt Quick + Qt WebEngine |
+| Qt | 6.8 or newer (`gcc_64` build), Qt Quick + Qt WebEngine |
 
 Qt WebEngine additionally needs the usual Chromium runtime libraries (NSS,
 libxkbcommon, libdrm, libxcb and friends); the Qt documentation lists the exact

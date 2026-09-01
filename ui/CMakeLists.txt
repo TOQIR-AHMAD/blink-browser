@@ -10,4 +10,4 @@ qt_add_qml_module(pb_ui
         Main.qml
 )
 
-target_link_libraries(pb_ui PRIVATE Qt6::Quick)
+target_link_libraries(pb_ui PRIVATE Qt6::Quick Qt6::QuickControls2)

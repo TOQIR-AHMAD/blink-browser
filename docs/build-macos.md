@@ -11,7 +11,7 @@ build has been performed or verified yet.
 | Xcode command line tools | current |
 | CMake | 3.21 or newer |
 | Ninja | 1.10 or newer |
-| Qt | 6.5 or newer (`macos` build), Qt Quick + Qt WebEngine |
+| Qt | 6.8 or newer (`macos` build), Qt Quick + Qt WebEngine |
 
 ## Expected commands
 

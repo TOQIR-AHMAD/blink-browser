@@ -28,7 +28,7 @@ Requirements and full instructions: [`docs/build-windows.md`](docs/build-windows
 (macOS and Linux: [build-macos.md](docs/build-macos.md),
 [build-linux.md](docs/build-linux.md)).
 
-In short — Visual Studio 2022 C++ tools, CMake 3.21+, Ninja, and Qt 6.5+ with
+In short — Visual Studio 2022 C++ tools, CMake 3.21+, Ninja, and Qt 6.8+ with
 `QT_ROOT_DIR` pointing at it:
 
 ```powershell
