@@ -137,7 +137,7 @@ Item {
 
                     Text {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text: modelData.value.toLocaleString(Qt.locale())
+                        text: modelData.value.toLocaleString(Qt.locale(), 'f', 0)
                         color: Colors.text
                         font.family: Typography.family
                         font.pixelSize: Typography.title

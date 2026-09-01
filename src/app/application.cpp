@@ -55,6 +55,16 @@ void BrowserApplication::prepareEnvironment()
         = pb::settings::SettingsController::loadStoredSettings();
     const std::string flags = pb::chromium::buildFlags(flagsFor(settings));
     qputenv("QTWEBENGINE_CHROMIUM_FLAGS", QByteArray::fromStdString(flags));
+
+    // Qt keeps two caches of its own under the application's config
+    // directory - compiled QML, and the graphics pipeline cache - and leaves
+    // them there between runs. Neither holds browsing data, but this browser's
+    // promise is that it writes nothing outside the session directory and the
+    // settings file the user asked for, so both are turned off. The privacy
+    // verification script checks that they stay gone.
+    qputenv("QML_DISABLE_DISK_CACHE", "1");
+    qputenv("QSG_RHI_DISABLE_DISK_CACHE", "1");
+    qputenv("QT_DISABLE_SHADER_DISK_CACHE", "1");
 }
 
 BrowserApplication::BrowserApplication(QObject *parent)

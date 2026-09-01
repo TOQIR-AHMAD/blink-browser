@@ -21,6 +21,12 @@ Item {
         label: "Test"
     }
 
+    StatTile {
+        id: tile
+        value: 1284
+        label: "TRACKERS BLOCKED"
+    }
+
     TestCase {
         name: "Theme"
         when: windowShown
@@ -88,6 +94,15 @@ Item {
             verify(surface.effectiveFill.toString() !== resting, "pressed changes the fill");
             surface.down = false;
             compare(surface.effectiveFill.toString(), resting, "and returns when released");
+        }
+
+        function test_counters_are_whole_numbers() {
+            // Number.toLocaleString(locale) alone renders a count as "1284.00".
+            const shown = findChild(tile, "statValue").text;
+            verify(shown.length > 0, "the tile shows its value");
+            verify(!shown.endsWith(".00") && !shown.endsWith(",00"),
+                   "a blocked count has no decimal part, got '" + shown + "'");
+            verify(shown.indexOf("1") === 0, "and starts with the value, got '" + shown + "'");
         }
 
         function test_toggle_switches() {

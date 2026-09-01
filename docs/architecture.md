@@ -142,6 +142,25 @@ in C++ and the QML follows.
 | `packaging/windows/` | version resource, icon, Inno Setup script |
 | `scripts/` | environment check, icon generator, packaging, privacy verification |
 
+## Visual identity
+
+PLAN.md §5 and §6 describe an Apple-inspired frosted-glass interface. The
+project owner asked for an Ubuntu look instead, so the design system now
+follows Canonical's Yaru: Ubuntu orange (#E95420) as the accent, aubergine for
+private windows, flat surfaces separated by hairline borders rather than
+translucency, a header bar attached to the top of the window instead of a
+floating panel, and the Ubuntu type family.
+
+The change was almost entirely in `ui/theme/` - the palette, the type scale and
+the radii - which is what those files exist for. The structural part was small:
+the header bar lost its margins and rounded corners, and the page area lost its
+inset border. The component names still say "Glass" because they are the same
+components; only their tokens changed.
+
+The Ubuntu and Ubuntu Mono faces ship with the application under the Ubuntu
+Font Licence (`ui/assets/fonts/LICENCE-Ubuntu-font.txt`) so the interface looks
+the same on a machine that has never had them installed.
+
 ## Logging
 
 `src/utils/logging.h` is the only logging entry point, because PLAN.md §31

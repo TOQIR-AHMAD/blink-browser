@@ -25,8 +25,9 @@ Item {
         width: parent.width - Spacing.medium * 2
 
         Text {
+            objectName: "statValue"
             width: parent.width
-            text: root.value.toLocaleString(Qt.locale())
+            text: root.value.toLocaleString(Qt.locale(), 'f', 0)
             color: root.accentColor
             font.family: Typography.family
             font.pixelSize: Typography.display

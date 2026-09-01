@@ -4,6 +4,7 @@
 # the types resolve without import-path guesswork.
 set(pb_theme_singletons
     Colors.qml
+    Fonts.qml
     Radius.qml
     Shadows.qml
     Spacing.qml

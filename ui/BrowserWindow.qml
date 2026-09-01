@@ -77,16 +77,28 @@ Window {
 
         // -- Chrome ---------------------------------------------------------
 
+        // The header bar: attached to the top of the window, flat, separated
+        // from the page by a hairline - the Yaru convention rather than a
+        // floating panel.
         GlassSurface {
             id: chrome
 
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.margins: Spacing.small
             height: tabStrip.height + navigation.height + Spacing.small * 2
-            cornerRadius: Radius.xlarge
-            elevated: true
+            cornerRadius: 0
+            borderWidth: 0
+            showHighlight: false
+            fillColor: Colors.backgroundElevated
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: 1
+                color: Colors.glassBorder
+            }
 
             TabBar {
                 id: tabStrip
@@ -132,15 +144,10 @@ Window {
             anchors.right: parent.right
             anchors.top: chrome.bottom
             anchors.bottom: parent.bottom
-            anchors.margins: Spacing.small
-            anchors.topMargin: Spacing.small
 
             Rectangle {
                 anchors.fill: parent
-                radius: Radius.large
                 color: Colors.contentBackground
-                border.width: 1
-                border.color: Colors.glassBorder
                 clip: true
 
                 Repeater {
@@ -378,10 +385,7 @@ Window {
         id: settingsComponent
 
         Rectangle {
-            radius: Radius.large
             color: Colors.background
-            border.width: 1
-            border.color: Colors.glassBorder
             clip: true
 
             Settings {
@@ -410,10 +414,7 @@ Window {
         id: dashboardComponent
 
         Rectangle {
-            radius: Radius.large
             color: Colors.background
-            border.width: 1
-            border.color: Colors.glassBorder
             clip: true
 
             PrivacyDashboard {
@@ -440,10 +441,7 @@ Window {
         id: downloadsComponent
 
         Rectangle {
-            radius: Radius.large
             color: Colors.background
-            border.width: 1
-            border.color: Colors.glassBorder
             clip: true
 
             DownloadsPanel {
@@ -484,44 +482,51 @@ Window {
     GlassMenu {
         id: mainMenu
 
-        MenuItem {
+        GlassMenuItem {
             text: qsTr("New tab")
+            shortcutText: "Ctrl+T"
             onTriggered: browserWindow.tabs.addTab()
         }
-        MenuItem {
+        GlassMenuItem {
             text: qsTr("New window")
+            shortcutText: "Ctrl+Shift+N"
             onTriggered: App.browser.createWindow(false)
         }
-        MenuItem {
+        GlassMenuItem {
             text: qsTr("New private window")
+            shortcutText: "Ctrl+Shift+P"
             onTriggered: App.browser.createWindow(true)
         }
-        MenuSeparator {}
-        MenuItem {
+        GlassMenuSeparator {}
+        GlassMenuItem {
             text: qsTr("Downloads")
+            shortcutText: "Ctrl+J"
             onTriggered: browserWindow.overlayPage = "downloads"
         }
-        MenuItem {
+        GlassMenuItem {
             text: qsTr("Privacy dashboard")
             onTriggered: browserWindow.overlayPage = "dashboard"
         }
-        MenuItem {
+        GlassMenuItem {
             text: qsTr("Settings")
+            shortcutText: "Ctrl+,"
             onTriggered: browserWindow.overlayPage = "settings"
         }
-        MenuSeparator {}
-        MenuItem {
+        GlassMenuSeparator {}
+        GlassMenuItem {
             text: qsTr("Clear browsing data now")
             onTriggered: App.privacy.clearBrowsingDataNow()
         }
-        MenuItem {
+        GlassMenuItem {
             text: qsTr("Copy page address")
             enabled: browserWindow.currentTab !== null
+                     && browserWindow.currentTab.url.toString() !== ""
             onTriggered: browserWindow.copyCurrentUrl()
         }
-        MenuSeparator {}
-        MenuItem {
+        GlassMenuSeparator {}
+        GlassMenuItem {
             text: qsTr("Close window")
+            shortcutText: "Alt+F4"
             onTriggered: browserWindow.windowController.requestClose()
         }
     }

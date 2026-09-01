@@ -38,6 +38,9 @@ QtObject {
 
     onDarkChanged: Colors.dark = theme.dark
     onTextScaleChanged: Typography.scale = theme.textScale
+    // Referencing the singleton is what instantiates its FontLoaders.
+    readonly property bool fontsReady: Fonts.ready
+
     Component.onCompleted: {
         Colors.dark = theme.dark;
         Typography.scale = theme.textScale;

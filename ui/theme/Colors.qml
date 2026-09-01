@@ -1,8 +1,14 @@
 // The palette, in one place.
 //
-// Two complete sets - light and dark - selected by Theme.dark. Every colour
+// Ubuntu's Yaru colours, dark and light, selected by Theme.dark. Every colour
 // used anywhere in the UI comes from here; nothing hard-codes a hex value, so
-// a change to the identity is a change to this file.
+// the visual identity is this file.
+//
+// The reference points are Canonical's own: Ubuntu orange #E95420 as the
+// accent, aubergine #772953 for the private-window accent, and Yaru's warm
+// neutral greys for the surfaces. Surfaces are flat and separated by hairline
+// borders rather than translucency - GNOME/Yaru does not do frosted glass, and
+// following that is the point of the theme.
 
 pragma Singleton
 
@@ -15,53 +21,54 @@ QtObject {
     property bool dark: true
 
     // Window and page surfaces -------------------------------------------
-    readonly property color background: dark ? "#0A0A0F" : "#EEF0F6"
-    readonly property color backgroundElevated: dark ? "#12121A" : "#F7F8FC"
-    readonly property color contentBackground: dark ? "#0E0E14" : "#FFFFFF"
+    readonly property color background: dark ? "#1E1E1E" : "#FAFAFA"
+    readonly property color backgroundElevated: dark ? "#303030" : "#F2F2F2"
+    readonly property color contentBackground: dark ? "#242424" : "#FFFFFF"
 
-    // A gradient behind the window chrome. Subtle: it should read as depth,
-    // not as decoration.
-    readonly property color auroraOne: dark ? "#1B2559" : "#DCE3FF"
-    readonly property color auroraTwo: dark ? "#2A1B4A" : "#EADDFF"
-    readonly property color auroraThree: dark ? "#0A2E3D" : "#DDF2FF"
+    // Yaru is flat: the three "aurora" stops are the window colour, so the
+    // gradient the window paints resolves to a single tone.
+    readonly property color auroraOne: background
+    readonly property color auroraTwo: dark ? "#2A2226" : "#F7F2F5" // a hint of aubergine
+    readonly property color auroraThree: background
 
-    // Glass ---------------------------------------------------------------
-    readonly property color glassFill: dark ? Qt.rgba(1, 1, 1, 0.07)
-                                            : Qt.rgba(1, 1, 1, 0.66)
-    readonly property color glassFillStrong: dark ? Qt.rgba(1, 1, 1, 0.12)
-                                                  : Qt.rgba(1, 1, 1, 0.82)
-    readonly property color glassHighlight: dark ? Qt.rgba(1, 1, 1, 0.16)
-                                                 : Qt.rgba(1, 1, 1, 0.95)
-    readonly property color glassBorder: dark ? Qt.rgba(1, 1, 1, 0.14)
-                                              : Qt.rgba(0, 0, 0, 0.08)
-    readonly property color glassBorderStrong: dark ? Qt.rgba(1, 1, 1, 0.24)
-                                                    : Qt.rgba(0, 0, 0, 0.14)
-    readonly property color shadow: dark ? Qt.rgba(0, 0, 0, 0.55)
-                                         : Qt.rgba(0.05, 0.07, 0.15, 0.18)
+    // Surfaces ------------------------------------------------------------
+    readonly property color glassFill: dark ? "#303030" : "#FFFFFF"
+    readonly property color glassFillStrong: dark ? "#3A3A3A" : "#FFFFFF"
+    readonly property color glassHighlight: dark ? Qt.rgba(1, 1, 1, 0.06)
+                                                 : Qt.rgba(1, 1, 1, 0.9)
+    readonly property color glassBorder: dark ? Qt.rgba(1, 1, 1, 0.12)
+                                              : Qt.rgba(0, 0, 0, 0.12)
+    readonly property color glassBorderStrong: dark ? Qt.rgba(1, 1, 1, 0.22)
+                                                    : Qt.rgba(0, 0, 0, 0.22)
+    readonly property color shadow: dark ? Qt.rgba(0, 0, 0, 0.45)
+                                         : Qt.rgba(0, 0, 0, 0.14)
 
     // Interaction ---------------------------------------------------------
-    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.10)
-                                        : Qt.rgba(0, 0, 0, 0.05)
-    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.16)
-                                          : Qt.rgba(0, 0, 0, 0.09)
-    readonly property color selection: dark ? Qt.rgba(0.43, 0.55, 1.0, 0.35)
-                                            : Qt.rgba(0.30, 0.39, 0.82, 0.28)
+    readonly property color hover: dark ? Qt.rgba(1, 1, 1, 0.08)
+                                        : Qt.rgba(0, 0, 0, 0.06)
+    readonly property color pressed: dark ? Qt.rgba(1, 1, 1, 0.14)
+                                          : Qt.rgba(0, 0, 0, 0.11)
+    readonly property color selection: dark ? Qt.rgba(0.91, 0.33, 0.13, 0.40)
+                                            : Qt.rgba(0.91, 0.33, 0.13, 0.28)
 
     // Text ----------------------------------------------------------------
-    readonly property color text: dark ? "#F4F4F8" : "#15161C"
-    readonly property color textSubtle: dark ? "#A8A8B6" : "#5C5F6B"
-    readonly property color textFaint: dark ? "#70707E" : "#8A8D99"
+    readonly property color text: dark ? "#FFFFFF" : "#111111"
+    readonly property color textSubtle: dark ? Qt.rgba(1, 1, 1, 0.70)
+                                             : Qt.rgba(0, 0, 0, 0.70)
+    readonly property color textFaint: dark ? Qt.rgba(1, 1, 1, 0.45)
+                                            : Qt.rgba(0, 0, 0, 0.45)
     readonly property color textOnAccent: "#FFFFFF"
 
     // Meaning -------------------------------------------------------------
-    readonly property color accent: dark ? "#7C93FF" : "#4356C9"
-    readonly property color accentMuted: dark ? Qt.rgba(0.49, 0.58, 1.0, 0.18)
-                                              : Qt.rgba(0.26, 0.34, 0.79, 0.12)
-    readonly property color secure: dark ? "#5BD6A0" : "#0F8A5F"
-    readonly property color insecure: dark ? "#F2B45C" : "#A96208"
-    readonly property color danger: dark ? "#FF7B7B" : "#C03434"
-    readonly property color privateAccent: dark ? "#C79BFF" : "#6D3FBF"
+    // Ubuntu orange, and Yaru's semantic colours.
+    readonly property color accent: "#E95420"
+    readonly property color accentMuted: dark ? Qt.rgba(0.91, 0.33, 0.13, 0.20)
+                                              : Qt.rgba(0.91, 0.33, 0.13, 0.14)
+    readonly property color secure: dark ? "#3EB34F" : "#0E8420"
+    readonly property color insecure: dark ? "#F9BC60" : "#C7620C"
+    readonly property color danger: dark ? "#E86581" : "#C7162B"
+    // Canonical aubergine, for private windows.
+    readonly property color privateAccent: dark ? "#B07CA8" : "#772953"
 
-    readonly property color focusRing: dark ? Qt.rgba(0.49, 0.58, 1.0, 0.85)
-                                            : Qt.rgba(0.26, 0.34, 0.79, 0.75)
+    readonly property color focusRing: accent
 }

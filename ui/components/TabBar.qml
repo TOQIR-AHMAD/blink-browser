@@ -21,18 +21,20 @@ Item {
     readonly property int tabWidth: {
         if (!tabs || tabs.count === 0)
             return maximumTabWidth;
-        const available = width - newTabButton.width - Spacing.small * 2;
-        const each = Math.floor(available / tabs.count) - list.spacing;
+        const each = Math.floor(root.availableWidth / tabs.count) - list.spacing;
         return Math.max(minimumTabWidth, Math.min(maximumTabWidth, each));
     }
+
+    // The strip is only as wide as its tabs, so the new-tab button sits right
+    // after the last one instead of being pinned to the far edge.
+    readonly property int availableWidth: width - newTabButton.width - Spacing.small * 2
 
     ListView {
         id: list
 
         anchors.left: parent.left
-        anchors.right: newTabButton.left
-        anchors.rightMargin: Spacing.small
         anchors.verticalCenter: parent.verticalCenter
+        width: Math.max(0, Math.min(contentWidth, root.availableWidth))
         height: parent.height
         orientation: ListView.Horizontal
         spacing: Spacing.tiny
@@ -142,7 +144,8 @@ Item {
     GlassButton {
         id: newTabButton
 
-        anchors.right: parent.right
+        anchors.left: list.right
+        anchors.leftMargin: Spacing.tiny
         anchors.verticalCenter: parent.verticalCenter
         width: 30
         height: 30

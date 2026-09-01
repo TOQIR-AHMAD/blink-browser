@@ -191,8 +191,9 @@ Item {
 
                 GlassToggle {
                     width: parent.width
-                    label: qsTr("Glass effects")
-                    description: qsTr("Blur and shadows. Turning them off is lighter on the GPU.")
+                    label: qsTr("Shadows and blur")
+                    description: qsTr("Soft shadows under menus and dialogs. Turning them off is "
+                                      + "lighter on the GPU.")
                     checked: root.settings.glassEffects
                     onToggled: root.settings.glassEffects = checked
                 }

@@ -22,6 +22,13 @@ qt_add_qml_module(pb_ui
         Main.qml
     RESOURCES
         assets/icon.png
+        assets/fonts/Ubuntu-R.ttf
+        assets/fonts/Ubuntu-L.ttf
+        assets/fonts/Ubuntu-M.ttf
+        assets/fonts/Ubuntu-B.ttf
+        assets/fonts/UbuntuMono-R.ttf
+        assets/fonts/UbuntuMono-B.ttf
+        assets/fonts/LICENCE-Ubuntu-font.txt
 )
 
 target_link_libraries(pb_ui

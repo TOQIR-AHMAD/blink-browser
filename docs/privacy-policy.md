@@ -26,6 +26,12 @@ it to send anything.
 | Files you download | Wherever you chose to save them | Yours — the browser does not delete them |
 | Settings | Nowhere, unless you turn on "Remember settings"; then a single JSON file in your user configuration folder | Until you turn the option off, which deletes the file |
 
+Qt itself would otherwise keep two caches of its own - compiled QML, and a
+graphics pipeline cache - in the application's configuration directory, between
+runs. Neither contains browsing data, but they are not on the list above, so
+the browser turns both off at start-up. Running it and then checking that no
+configuration directory appears is part of `scripts/verify-privacy.ps1`.
+
 The browser stores no passwords, no autofill data, no bookmarks, no form
 history and no per-installation identifier.
 

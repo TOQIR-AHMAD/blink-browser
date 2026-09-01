@@ -43,7 +43,7 @@ AbstractButton {
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
-            text: control.blockedCount > 0 ? control.blockedCount.toLocaleString(Qt.locale())
+            text: control.blockedCount > 0 ? control.blockedCount.toLocaleString(Qt.locale(), 'f', 0)
                                            : qsTr("Protected")
             color: Colors.text
             font.family: Typography.family

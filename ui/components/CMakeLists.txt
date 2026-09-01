@@ -14,6 +14,8 @@ qt_add_qml_module(pb_ui_components
         GlassCard.qml
         GlassDialog.qml
         GlassMenu.qml
+        GlassMenuItem.qml
+        GlassMenuSeparator.qml
         GlassSelect.qml
         GlassSlider.qml
         GlassSurface.qml

@@ -113,7 +113,9 @@ Item {
         function onNavigationRequested(target) {
             view.tabData.url = target;
             view.tabData.loading = false;
-            view.tabData.securityLevel = target.toString().startsWith("https://") ? 3 : 2;
+            // Nothing was fetched, so nothing is known about the connection.
+            // Drawing a padlock here would be a lie.
+            view.tabData.securityLevel = 0;
         }
     }
 }
