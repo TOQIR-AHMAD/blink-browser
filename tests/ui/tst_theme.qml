@@ -65,11 +65,12 @@ Item {
 
         function test_light_and_dark_palettes_are_distinct() {
             Theme.mode = 1;
-            const lightText = Colors.text;
-            const lightBackground = Colors.background;
+            const lightText = Colors.text.toString();
+            const lightBackground = Colors.background.toString();
             Theme.mode = 2;
-            verify(Colors.text !== lightText, "text colour changes with the theme");
-            verify(Colors.background !== lightBackground, "so does the background");
+            compare(Colors.dark, true, "the palette followed the theme");
+            verify(Colors.text.toString() !== lightText, "text colour changes with the theme");
+            verify(Colors.background.toString() !== lightBackground, "so does the background");
             Theme.mode = 0;
         }
     }
@@ -79,13 +80,14 @@ Item {
         when: windowShown
 
         function test_surface_reacts_to_interaction() {
-            const resting = surface.effectiveFill;
+            const resting = surface.effectiveFill.toString();
             surface.hovered = true;
-            verify(surface.effectiveFill !== resting, "hover changes the fill");
-            surface.down = true;
+            verify(surface.effectiveFill.toString() !== resting, "hover changes the fill");
             surface.hovered = false;
-            verify(surface.effectiveFill !== resting, "pressed changes the fill");
+            surface.down = true;
+            verify(surface.effectiveFill.toString() !== resting, "pressed changes the fill");
             surface.down = false;
+            compare(surface.effectiveFill.toString(), resting, "and returns when released");
         }
 
         function test_toggle_switches() {

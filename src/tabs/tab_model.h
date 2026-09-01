@@ -7,6 +7,8 @@
 #ifndef PB_TABS_TAB_MODEL_H
 #define PB_TABS_TAB_MODEL_H
 
+#include "tabs/tab.h"
+
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QHash>
 #include <QtCore/QList>
@@ -15,8 +17,6 @@
 #include <QtQml/qqmlregistration.h>
 
 namespace pb::tabs {
-
-class Tab;
 
 class TabModel : public QAbstractListModel
 {

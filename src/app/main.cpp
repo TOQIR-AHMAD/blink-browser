@@ -12,7 +12,9 @@
 #include <QtGui/QIcon>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQuickControls2/QQuickStyle>
-#include <QtWebEngineQuick/QtWebEngineQuick>
+#ifdef PB_WEB_ENGINE
+#  include <QtWebEngineQuick/QtWebEngineQuick>
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +23,9 @@ int main(int argc, char *argv[])
     // No organization domain and no installation identifier (PLAN.md §49).
 
     pb::app::BrowserApplication::prepareEnvironment();
+#ifdef PB_WEB_ENGINE
     QtWebEngineQuick::initialize();
+#endif
 
     // The Basic style has no platform theming of its own, which is what the
     // glass components need: every control here is drawn by this project.

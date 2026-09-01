@@ -1,9 +1,11 @@
 #include "privacy/privacy_manager.h"
 
-#include "chromium/web_profile.h"
 #include "network/filter_service.h"
-#include "network/request_interceptor.h"
 #include "settings/settings_controller.h"
+#ifdef PB_WEB_ENGINE
+#  include "chromium/web_profile.h"
+#  include "network/request_interceptor.h"
+#endif
 #include "utils/logging.h"
 
 #include <QtCore/QTimer>
@@ -34,6 +36,7 @@ PrivacyManager::PrivacyManager(pb::chromium::WebProfile *profile,
     m_statsTimer->setInterval(kStatsCoalesceMs);
     connect(m_statsTimer, &QTimer::timeout, this, &PrivacyManager::statsChanged);
 
+#ifdef PB_WEB_ENGINE
     if (m_interceptor) {
         connect(m_interceptor, &pb::network::RequestInterceptor::requestBlocked, this,
                 &PrivacyManager::scheduleStatsUpdate);
@@ -44,6 +47,7 @@ PrivacyManager::PrivacyManager(pb::chromium::WebProfile *profile,
             scheduleStatsUpdate();
         });
     }
+#endif
     if (m_settings) {
         connect(m_settings, &pb::settings::SettingsController::changed, this,
                 &PrivacyManager::applySettings);
@@ -107,35 +111,51 @@ bool PrivacyManager::auditAvailable() const
 
 bool PrivacyManager::auditEnabled() const
 {
+#ifdef PB_WEB_ENGINE
     return m_interceptor && m_interceptor->auditEnabled();
+#else
+    return false;
+#endif
 }
 
 void PrivacyManager::setAuditEnabled(bool enabled)
 {
+#ifdef PB_WEB_ENGINE
     if (!m_interceptor || !auditAvailable())
         return;
     if (m_interceptor->auditEnabled() == enabled)
         return;
     m_interceptor->setAuditEnabled(enabled);
     Q_EMIT auditChanged();
+#else
+    Q_UNUSED(enabled)
+#endif
 }
 
 QVariantList PrivacyManager::auditRows() const
 {
+#ifdef PB_WEB_ENGINE
     return m_interceptor ? m_interceptor->auditRows() : QVariantList();
+#else
+    return {};
+#endif
 }
 
 void PrivacyManager::clearAudit()
 {
+#ifdef PB_WEB_ENGINE
     if (m_interceptor)
         m_interceptor->clearAudit();
+#endif
     Q_EMIT auditChanged();
 }
 
 void PrivacyManager::clearBrowsingDataNow()
 {
+#ifdef PB_WEB_ENGINE
     if (m_profile)
         m_profile->clearBrowsingData();
+#endif
     pb::log::write(pb::log::Level::Info, "browsing data cleared on request");
 }
 
@@ -147,8 +167,12 @@ void PrivacyManager::resetStatistics()
 
 void PrivacyManager::recordHttpsFailure(const QString &host)
 {
+#ifdef PB_WEB_ENGINE
     if (m_interceptor)
         m_interceptor->recordHttpsFailure(host);
+#else
+    Q_UNUSED(host)
+#endif
 }
 
 QVariantList PrivacyManager::storageSummary() const
@@ -194,6 +218,7 @@ void PrivacyManager::applySettings()
 
     if (m_filters)
         m_filters->setEnabled(values.trackerBlocking, values.adBlocking);
+#ifdef PB_WEB_ENGINE
     if (m_interceptor) {
         m_interceptor->setBlockingEnabled(values.trackerBlocking, values.adBlocking);
         m_interceptor->setHttpsFirstEnabled(values.httpsFirst);
@@ -204,16 +229,21 @@ void PrivacyManager::applySettings()
         config.fingerprint = values.fingerprintProtection;
         m_profile->applyConfig(config);
     }
+#endif
 }
 
 void PrivacyManager::buildCleanupSequence()
 {
     m_cleanup.addStep("clear browsing data", [this](std::string *detail) {
+#ifdef PB_WEB_ENGINE
         if (!m_profile) {
             *detail = "no profile";
             return true;
         }
         m_profile->clearBrowsingData();
+#else
+        *detail = "no web engine in this build";
+#endif
         return true;
     });
 
@@ -223,8 +253,10 @@ void PrivacyManager::buildCleanupSequence()
     });
 
     m_cleanup.addStep("clear network audit", [this](std::string *) {
+#ifdef PB_WEB_ENGINE
         if (m_interceptor)
             m_interceptor->clearAudit();
+#endif
         return true;
     });
 

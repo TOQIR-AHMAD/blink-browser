@@ -9,7 +9,9 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QUrl>
 #include <QtGui/QDesktopServices>
-#include <QtWebEngineCore/QWebEngineDownloadRequest>
+#ifdef PB_WEB_ENGINE
+#  include <QtWebEngineCore/QWebEngineDownloadRequest>
+#endif
 
 namespace pb::downloads {
 
@@ -17,12 +19,18 @@ DownloadItem::DownloadItem(int id, QWebEngineDownloadRequest *request, bool askW
                            QObject *parent)
     : QObject(parent)
     , m_id(id)
-    , m_request(request)
     , m_askWhereToSave(askWhereToSave)
 {
+#ifndef PB_WEB_ENGINE
+    // No web engine, no downloads: the item exists only so the rest of the
+    // browser has the same shape in both builds.
+    Q_UNUSED(request)
+    m_state = Failed;
+#else
     if (!request)
         return;
 
+    m_request = request;
     m_fileName = request->downloadFileName();
     m_totalBytes = request->totalBytes();
     m_temporaryPath = request->downloadDirectory() + QLatin1Char('/') + m_fileName;
@@ -44,6 +52,7 @@ DownloadItem::DownloadItem(int id, QWebEngineDownloadRequest *request, bool askW
     });
     connect(request, &QWebEngineDownloadRequest::stateChanged, this,
             &DownloadItem::onStateChanged);
+#endif
 }
 
 qreal DownloadItem::progress() const
@@ -63,6 +72,7 @@ void DownloadItem::setState(State state)
 
 void DownloadItem::onStateChanged()
 {
+#ifdef PB_WEB_ENGINE
     if (!m_request)
         return;
 
@@ -87,24 +97,31 @@ void DownloadItem::onStateChanged()
     case QWebEngineDownloadRequest::DownloadRequested:
         break;
     }
+#endif
 }
 
 void DownloadItem::pause()
 {
+#ifdef PB_WEB_ENGINE
     if (m_request)
         m_request->pause();
+#endif
 }
 
 void DownloadItem::resume()
 {
+#ifdef PB_WEB_ENGINE
     if (m_request)
         m_request->resume();
+#endif
 }
 
 void DownloadItem::cancel()
 {
+#ifdef PB_WEB_ENGINE
     if (m_request)
         m_request->cancel();
+#endif
     setState(Cancelled);
 }
 
@@ -184,6 +201,9 @@ QString DownloadManager::suggestedSaveDirectory() const
 
 void DownloadManager::handleDownloadRequested(QWebEngineDownloadRequest *request)
 {
+#ifndef PB_WEB_ENGINE
+    Q_UNUSED(request)
+#else
     if (!request)
         return;
 
@@ -209,6 +229,7 @@ void DownloadManager::handleDownloadRequested(QWebEngineDownloadRequest *request
     append(item);
     request->accept();
     Q_EMIT downloadStarted(item);
+#endif
 }
 
 void DownloadManager::append(DownloadItem *item)

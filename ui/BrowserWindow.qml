@@ -8,10 +8,10 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-import QtWebEngine
 import PrivacyBrowser.Ui.Components
 import PrivacyBrowser.Ui.Pages
 import PrivacyBrowser.Ui.Theme
+import PrivacyBrowser.Ui.Web
 
 Window {
     id: browserWindow
@@ -148,7 +148,11 @@ Window {
 
                     model: browserWindow.tabs
 
-                    delegate: WebEngineView {
+                    // WebArea is either a real WebEngineView or, in a build
+                    // without Chromium, a panel that says so. Everything that
+                    // needs an answer from the user is reported up to this
+                    // window, which owns the overlays that ask.
+                    delegate: WebArea {
                         id: view
 
                         required property int index
@@ -157,66 +161,28 @@ Window {
                         anchors.fill: parent
                         visible: browserWindow.tabs.currentIndex === view.index
                         focus: visible
-                        // The one off-the-record profile, created in C++.
-                        profile: App.profile
-                        url: view.tab.initialUrl && view.tab.initialUrl.toString() !== ""
-                             ? view.tab.initialUrl : "about:blank"
-                        audioMuted: view.tab.muted
+                        tabData: view.tab
+                        controller: browserWindow.windowController
 
-                        settings.screenCaptureEnabled: false
-                        settings.javascriptCanAccessClipboard: false
-                        settings.allowRunningInsecureContent: false
-
-                        onTitleChanged: view.tab.title = view.title
-                        onIconChanged: view.tab.iconUrl = view.icon
-                        onLoadProgressChanged: view.tab.loadProgress = view.loadProgress
-                        onCanGoBackChanged: view.tab.canGoBack = view.canGoBack
-                        onCanGoForwardChanged: view.tab.canGoForward = view.canGoForward
-                        onRecentlyAudibleChanged: view.tab.audible = view.recentlyAudible
-
-                        onUrlChanged: {
-                            view.tab.url = view.url;
+                        onLoadSucceeded: function (pageUrl, pageTitle) {
+                            view.tab.securityLevel = browserWindow.securityLevelFor(pageUrl,
+                                                                                    view.tab);
+                            browserWindow.windowController.recordVisit(pageUrl, pageTitle);
                             errorOverlay.visible = false;
                         }
 
-                        onLoadingChanged: function (loadRequest) {
-                            view.tab.loading = loadRequest.status === WebEngineView.LoadStartedStatus;
-
-                            if (loadRequest.status === WebEngineView.LoadStartedStatus) {
-                                view.tab.crashed = false;
-                                errorOverlay.visible = false;
-                                return;
-                            }
-
-                            if (loadRequest.status === WebEngineView.LoadSucceededStatus) {
-                                view.tab.securityLevel = browserWindow.securityLevelFor(view.url,
-                                                                                view.tab);
-                                browserWindow.windowController.recordVisit(view.url, view.title);
-                                return;
-                            }
-
-                            if (loadRequest.status === WebEngineView.LoadFailedStatus) {
-                                // A failed https attempt on a host we upgraded is
-                                // remembered so the next visit is not upgraded again.
-                                const failedUrl = loadRequest.url;
-                                const isHttps = failedUrl.toString().startsWith("https://");
-                                errorOverlay.host = browserWindow.hostOf(failedUrl);
-                                errorOverlay.errorCode = loadRequest.errorCode;
-                                errorOverlay.errorText = loadRequest.errorString;
-                                errorOverlay.httpsFallbackOffered =
-                                    isHttps && App.settings.httpsFirst;
-                                errorOverlay.failedUrl = failedUrl;
-                                errorOverlay.visible = true;
-                            }
+                        onLoadFailed: function (failedUrl, errorCode, errorText, wasHttps) {
+                            errorOverlay.host = browserWindow.hostOf(failedUrl);
+                            errorOverlay.errorCode = errorCode;
+                            errorOverlay.errorText = errorText;
+                            // The fallback is offered only when an https attempt
+                            // actually failed and we were the ones who upgraded.
+                            errorOverlay.httpsFallbackOffered = wasHttps && App.settings.httpsFirst;
+                            errorOverlay.failedUrl = failedUrl;
+                            errorOverlay.visible = true;
                         }
 
-                        onRenderProcessTerminated: function (terminationStatus, exitCode) {
-                            view.tab.crashed = true;
-                            view.tab.loading = false;
-                        }
-
-                        onCertificateError: function (error) {
-                            error.defer();
+                        onCertificateProblem: function (error) {
                             certificateWarning.pending = error;
                             certificateWarning.host = browserWindow.hostOf(error.url);
                             certificateWarning.description = error.description;
@@ -224,27 +190,7 @@ Window {
                             certificateWarning.visible = true;
                         }
 
-                        onNewWindowRequested: function (request) {
-                            // Opened as a tab in this window, or a new window
-                            // when the page asked for one.
-                            if (request.destination === WebEngineNewWindowRequest.InNewWindow) {
-                                browserWindow.windowController.openInNewWindow(request.requestedUrl,
-                                                                        browserWindow.privateMode);
-                            } else {
-                                browserWindow.tabs.addTab(request.requestedUrl,
-                                                   request.userInitiated === false);
-                            }
-                        }
-
-                        onFullScreenRequested: function (request) {
-                            request.accept();
-                            if (request.toggleOn)
-                                browserWindow.showFullScreen();
-                            else
-                                browserWindow.showNormal();
-                        }
-
-                        onPermissionRequested: function (permission) {
+                        onPermissionAsked: function (permission) {
                             const feature = App.permissions.featureFromWebEngine(
                                 permission.permissionType);
                             const origin = permission.origin.toString();
@@ -267,27 +213,20 @@ Window {
                                                  App.permissions.featureDescription(feature));
                         }
 
-                        Connections {
-                            target: view.tab
+                        onWindowRequested: function (target, separateWindow, background) {
+                            if (separateWindow) {
+                                browserWindow.windowController.openInNewWindow(
+                                    target, browserWindow.privateMode);
+                            } else {
+                                browserWindow.tabs.addTab(target, background);
+                            }
+                        }
 
-                            function onNavigationRequested(target) {
-                                view.url = target;
-                            }
-                            function onReloadRequested(bypassCache) {
-                                if (bypassCache)
-                                    view.reloadAndBypassCache();
-                                else
-                                    view.reload();
-                            }
-                            function onStopRequested() {
-                                view.stop();
-                            }
-                            function onBackRequested() {
-                                view.goBack();
-                            }
-                            function onForwardRequested() {
-                                view.goForward();
-                            }
+                        onFullScreenToggled: function (on) {
+                            if (on)
+                                browserWindow.showFullScreen();
+                            else
+                                browserWindow.showNormal();
                         }
                     }
                 }

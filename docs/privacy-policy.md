@@ -100,13 +100,20 @@ A privacy-first browser does not make you invisible. Specifically:
   reads actually exists, so a renamed property cannot silently blank out a
   privacy indicator.
 
-**Not yet run:** the runtime checks in the last two items have not been
-executed, because the machine this project was built on cannot compile the Qt
-half of it (see the build documentation). Until they have been run on a real
-build, treat the runtime claims above as what the code is written to do rather
-than as measured behaviour. The claims about what is *not implemented* — no
-telemetry, no accounts, no update check — are verified by the source audit,
-which does run.
+**What has actually been run.** The unit tests, the integration tests, the QML
+tests, the source audit and the binding check all pass, and the application has
+been built and started: it creates its session directory under the system
+temporary directory and, on a normal close, exits having removed it, leaving
+nothing behind.
+
+**What has not.** That build was made without Qt WebEngine (see
+`docs/build-windows.md`), so every claim on this page that depends on Chromium
+— the off-the-record profile, the in-memory cookie jar and cache, request
+blocking, HTTPS-first, permission prompts and downloads — describes what the
+code is written to do and has not yet been measured. `tst_persistence` and
+`scripts/verify-privacy.ps1` are the checks that will measure it, and they need
+the MSVC build. The claims about what is *not implemented* — no telemetry, no
+accounts, no update check — are verified by the source audit, which does run.
 
 ## Changes
 

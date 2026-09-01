@@ -68,14 +68,10 @@ qt_add_library(pb_browser STATIC
     browser/browser_controller.h
     browser/window_controller.cpp
     browser/window_controller.h
-    chromium/web_profile.cpp
-    chromium/web_profile.h
     downloads/download_manager.cpp
     downloads/download_manager.h
     network/filter_service.cpp
     network/filter_service.h
-    network/request_interceptor.cpp
-    network/request_interceptor.h
     permissions/permission_manager.cpp
     permissions/permission_manager.h
     privacy/privacy_manager.cpp
@@ -88,9 +84,35 @@ qt_add_library(pb_browser STATIC
     tabs/tab_model.h
 )
 
+# The two files that speak to Qt WebEngine directly.
+if(PB_WEB_ENGINE)
+    target_sources(pb_browser PRIVATE
+        chromium/web_profile.cpp
+        chromium/web_profile.h
+        network/request_interceptor.cpp
+        network/request_interceptor.h
+    )
+    target_compile_definitions(pb_browser PUBLIC PB_WEB_ENGINE)
+endif()
+
 qt_add_qml_module(pb_browser
     URI PrivacyBrowser.Core
     VERSION 1.0
+)
+
+# qmltyperegistrar generates code that includes each type's header by its bare
+# file name, so the directories holding those headers have to be on the include
+# path as well as src/ itself.
+target_include_directories(pb_browser PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/app"
+    "${CMAKE_CURRENT_SOURCE_DIR}/browser"
+    "${CMAKE_CURRENT_SOURCE_DIR}/chromium"
+    "${CMAKE_CURRENT_SOURCE_DIR}/downloads"
+    "${CMAKE_CURRENT_SOURCE_DIR}/network"
+    "${CMAKE_CURRENT_SOURCE_DIR}/permissions"
+    "${CMAKE_CURRENT_SOURCE_DIR}/privacy"
+    "${CMAKE_CURRENT_SOURCE_DIR}/settings"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tabs"
 )
 
 target_compile_definitions(pb_browser PUBLIC PB_VERSION="${PROJECT_VERSION}")
@@ -118,8 +140,11 @@ target_link_libraries(pb_browser
         Qt6::Network
         Qt6::Quick
         Qt6::QuickControls2
-        Qt6::WebEngineQuick
 )
+
+if(PB_WEB_ENGINE)
+    target_link_libraries(pb_browser PUBLIC Qt6::WebEngineQuick)
+endif()
 
 add_library(PrivacyBrowser::Browser ALIAS pb_browser)
 

@@ -156,14 +156,21 @@ forbids logs containing URLs, queries, form values or page content.
 
 | Target | State |
 | --- | --- |
-| `pb_core` and the 17 unit tests | **Built and passing**, with MSVC 2017 via the `core-only` preset |
-| `audit_sources.py` and `check_qml_bindings.py` | **Passing** — both run in every configuration |
-| `pb_browser`, `PrivacyBrowser`, the QML modules | **Not yet compiled**: Qt 6 is not installed on the development machine, and its MSVC 2017 toolset is below Qt 6's floor |
-| `tests/integration`, `tests/privacy/tst_persistence`, `tests/ui` | Written; run when Qt is available |
+| `pb_core` and the 17 unit tests | **Built and passing** — MSVC 2017 (`core-only` preset) and MinGW 13 |
+| `audit_sources.py`, `check_qml_bindings.py` | **Passing** in every configuration |
+| `pb_browser`, `PrivacyBrowser`, all five QML modules | **Built and running** with Qt 6.8.3 / MinGW 13, `-DPB_WEB_ENGINE=OFF` |
+| `tests/integration`, `tests/ui` | **Passing** — 21 tests in the MinGW configuration |
+| `tests/privacy/tst_persistence` | Skipped without Qt WebEngine; needs the MSVC build |
+| Anything through Chromium | **Unverified at runtime**: the profile, interception, blocking, HTTPS-first, permissions, downloads |
 
-`docs/build-windows.md` lists what to install. Until that build has been run,
-the Qt-facing code should be treated as reviewed but unverified — the runtime
-API calls against Qt WebEngine in particular.
+Running the built application confirms the window, the QML modules, the tab and
+window controllers, the settings model and the session lifecycle: it starts,
+creates its session directory under the system temp directory, and on a normal
+close exits with status 0 having removed it.
+
+What has *not* been exercised is everything on the other side of Qt WebEngine,
+because the engine is not in that build. `docs/build-windows.md` lists what to
+install for the full build.
 
 ## Dependencies
 

@@ -42,7 +42,7 @@ choices, so install it deliberately:
 Then point the build at it:
 
 ```powershell
-$env:QT_ROOT_DIR = "C:\Qt\6.8.3\msvc2022_64"
+$env:QT_ROOT_DIR = "C:\Qt\6.8.3\mingw_64"
 ```
 
 The CMake presets pass `QT_ROOT_DIR` through as `CMAKE_PREFIX_PATH`. Set it
@@ -73,7 +73,41 @@ cmake --build --preset windows-release
 The debug preset sets `PB_DEV_LOGGING=ON`, which lets log lines keep the host
 part of a URL. Release builds must leave it off (see `docs/architecture.md`).
 
-## Building without Qt
+## Building without Qt WebEngine
+
+Qt ships Qt WebEngine on Windows only for the MSVC toolchain. With the MinGW Qt
+- which installs without administrator rights - the browser still builds and
+runs, with a placeholder in place of the page:
+
+```powershell
+$env:QT_ROOT_DIR = "C:\Qt\6.8.3\mingw_64"
+$env:PATH = "C:\Qt\Tools\mingw1310_64\bin;$env:QT_ROOT_DIR\bin;$env:PATH"
+cmake -S . -B build\mingw -G Ninja -DCMAKE_BUILD_TYPE=Release `
+      -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/mingw_64 -DPB_WEB_ENGINE=OFF
+cmake --build build\mingw
+ctest --test-dir build\mingw --output-on-failure
+```
+
+This is a real build of everything except Chromium: the chrome, the tabs, the
+address bar, the settings, the privacy dashboard and the C++ models behind them
+all work. No page can be loaded, and nothing that depends on the engine -
+blocking, the off-the-record profile, permissions, downloads - runs at all.
+
+To deploy it as a folder that runs anywhere:
+
+```powershell
+windeployqt --release --qmldir ui --compiler-runtime dist\PrivacyBrowser.exe
+```
+
+If you install Qt with `aqtinstall`, the MinGW Qt and its compiler are:
+
+```powershell
+pip install aqtinstall
+python -m aqt install-qt windows desktop 6.8.3 win64_mingw -O C:\Qt
+python -m aqt install-tool windows desktop tools_mingw1310 -O C:\Qt
+```
+
+## Building without Qt at all
 
 The Qt-free core libraries and their tests build on their own. This is useful
 for checking the toolchain, or on a machine where Qt is not installed:

@@ -3,11 +3,13 @@
 #include "browser/browser_controller.h"
 #include "browser/window_controller.h"
 #include "chromium/core/chromium_flags.h"
-#include "chromium/web_profile.h"
 #include "downloads/download_manager.h"
 #include "network/filter_service.h"
-#include "network/request_interceptor.h"
 #include "permissions/permission_manager.h"
+#ifdef PB_WEB_ENGINE
+#  include "chromium/web_profile.h"
+#  include "network/request_interceptor.h"
+#endif
 #include "privacy/privacy_manager.h"
 #include "settings/settings_controller.h"
 #include "tabs/tab_model.h"
@@ -22,8 +24,10 @@
 #include <QtCore/QtGlobal>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
-#include <QtWebEngineCore/QWebEngineProfile>
-#include <QtWebEngineCore/qtwebenginecoreglobal.h>
+#ifdef PB_WEB_ENGINE
+#  include <QtWebEngineCore/QWebEngineProfile>
+#  include <QtWebEngineCore/qtwebenginecoreglobal.h>
+#endif
 
 namespace pb::app {
 namespace {
@@ -65,21 +69,32 @@ BrowserApplication::BrowserApplication(QObject *parent)
     m_settings = new pb::settings::SettingsController(this);
     m_firstRun = !m_settings->storedOnDisk();
 
-    m_webProfile = new pb::chromium::WebProfile(this);
     m_filters = new pb::network::FilterService(this);
+
+#ifdef PB_WEB_ENGINE
+    m_webProfile = new pb::chromium::WebProfile(this);
     m_interceptor = new pb::network::RequestInterceptor(m_filters, &m_stats, this);
     m_webProfile->setRequestInterceptor(m_interceptor);
 
     m_privacy = new pb::privacy::PrivacyManager(m_webProfile, m_filters, m_interceptor,
                                                 m_settings, &m_stats, &m_sessionPaths, this);
+#else
+    // Without Chromium there is no profile and no interceptor to drive; the
+    // privacy manager still owns the counters, the filter lists and the
+    // cleanup sequence.
+    m_privacy = new pb::privacy::PrivacyManager(nullptr, m_filters, nullptr, m_settings,
+                                                &m_stats, &m_sessionPaths, this);
+#endif
     m_permissions = new pb::permissions::PermissionManager(&m_stats, this);
     m_downloads = new pb::downloads::DownloadManager(m_settings, sessionPath, this);
     m_browser = new pb::browser::BrowserController(m_settings, this);
 
+#ifdef PB_WEB_ENGINE
     if (QWebEngineProfile *profile = m_webProfile->profile()) {
         connect(profile, &QWebEngineProfile::downloadRequested, m_downloads,
                 &pb::downloads::DownloadManager::handleDownloadRequested);
     }
+#endif
     connect(m_settings, &pb::settings::SettingsController::changed, this,
             &BrowserApplication::applyConfiguration);
 
@@ -97,10 +112,12 @@ void BrowserApplication::registerWithEngine(QQmlApplicationEngine &engine)
     engine.rootContext()->setContextProperty(QStringLiteral("App"), this);
 }
 
+#ifdef PB_WEB_ENGINE
 QWebEngineProfile *BrowserApplication::webEngineProfile() const
 {
     return m_webProfile ? m_webProfile->profile() : nullptr;
 }
+#endif
 
 QString BrowserApplication::version() const
 {
@@ -109,7 +126,11 @@ QString BrowserApplication::version() const
 
 QString BrowserApplication::chromiumVersion() const
 {
+#ifdef PB_WEB_ENGINE
     return QString::fromLatin1(qWebEngineChromiumVersion());
+#else
+    return tr("not in this build");
+#endif
 }
 
 QString BrowserApplication::qtVersion() const
@@ -186,8 +207,10 @@ bool BrowserApplication::shutdown()
     if (m_permissions)
         m_permissions->clear();
 
+#ifdef PB_WEB_ENGINE
     if (m_webProfile)
         m_webProfile->setRequestInterceptor(nullptr);
+#endif
 
     bool ok = true;
     if (m_privacy) {

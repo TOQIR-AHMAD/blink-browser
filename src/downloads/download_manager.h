@@ -89,7 +89,9 @@ private:
     void onStateChanged();
 
     const int m_id;
+#ifdef PB_WEB_ENGINE
     QPointer<QWebEngineDownloadRequest> m_request;
+#endif
     bool m_askWhereToSave = false;
     QString m_fileName;
     QString m_savePath;

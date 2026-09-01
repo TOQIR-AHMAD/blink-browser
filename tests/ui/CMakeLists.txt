@@ -30,4 +30,7 @@ target_link_libraries(tst_ui PRIVATE
     pb_ui_themeplugin
 )
 
+# Console subsystem, so the test's output reaches the terminal and CTest.
+set_target_properties(tst_ui PROPERTIES WIN32_EXECUTABLE FALSE)
+
 add_test(NAME ui COMMAND tst_ui -input "${CMAKE_CURRENT_SOURCE_DIR}" -platform offscreen)

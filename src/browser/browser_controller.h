@@ -8,6 +8,7 @@
 #define PB_BROWSER_BROWSER_CONTROLLER_H
 
 #include "browser/core/session_history.h"
+#include "browser/window_controller.h"
 
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QHash>
@@ -20,8 +21,6 @@ class SettingsController;
 }
 
 namespace pb::browser {
-
-class WindowController;
 
 class WindowListModel : public QAbstractListModel
 {

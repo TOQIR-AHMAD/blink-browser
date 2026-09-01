@@ -7,14 +7,12 @@
 #ifndef PB_BROWSER_WINDOW_CONTROLLER_H
 #define PB_BROWSER_WINDOW_CONTROLLER_H
 
+#include "tabs/tab_model.h"
+
 #include <QtCore/QObject>
 #include <QtCore/QUrl>
 #include <QtCore/QVariantList>
 #include <QtQml/qqmlregistration.h>
-
-namespace pb::tabs {
-class TabModel;
-}
 
 namespace pb::browser {
 
@@ -28,7 +26,6 @@ class WindowController : public QObject
 
     Q_PROPERTY(pb::tabs::TabModel *tabs READ tabs CONSTANT)
     Q_PROPERTY(bool privateMode READ privateMode CONSTANT)
-    Q_PROPERTY(pb::browser::BrowserController *browser READ browser CONSTANT)
 
 public:
     WindowController(BrowserController *browser, bool privateMode, QObject *parent = nullptr);

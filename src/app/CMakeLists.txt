@@ -11,6 +11,7 @@ target_link_libraries(PrivacyBrowser PRIVATE
     pb_ui_themeplugin
     pb_ui_componentsplugin
     pb_ui_pagesplugin
+    pb_ui_webplugin
 )
 
 # WIN32_EXECUTABLE keeps a release build from opening a console window; the

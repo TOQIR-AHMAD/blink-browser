@@ -10,6 +10,7 @@
 add_subdirectory(theme)
 add_subdirectory(components)
 add_subdirectory(pages)
+add_subdirectory(web)
 
 qt_add_library(pb_ui STATIC)
 
@@ -27,8 +28,8 @@ target_link_libraries(pb_ui
     PRIVATE
         Qt6::Quick
         Qt6::QuickControls2
-        Qt6::WebEngineQuick
         pb_ui_componentsplugin
         pb_ui_pagesplugin
         pb_ui_themeplugin
+        pb_ui_webplugin
 )

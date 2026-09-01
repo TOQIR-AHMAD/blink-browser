@@ -9,6 +9,7 @@
 
 #include "privacy/core/blocking_stats.h"
 #include "privacy/core/cleanup_sequence.h"
+#include "network/filter_service.h"
 #include "privacy/core/session_paths.h"
 
 #include <QtCore/QObject>
@@ -24,7 +25,6 @@ namespace pb::chromium {
 class WebProfile;
 }
 namespace pb::network {
-class FilterService;
 class RequestInterceptor;
 }
 namespace pb::settings {

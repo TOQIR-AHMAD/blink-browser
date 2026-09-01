@@ -184,7 +184,8 @@ void BrowserTest::addressBarResolvesInput()
     QVERIFY(search.isValid());
     QVERIFY2(search.host().contains(QLatin1String("duckduckgo")),
              "a search goes to the configured provider");
-    QVERIFY(search.toString().contains(QLatin1String("privacy%20browser")));
+    QVERIFY2(search.toString(QUrl::FullyEncoded).contains(QLatin1String("privacy%20browser")),
+             "the search terms must reach the provider percent-encoded");
 
     const QUrl script = window->resolveInput(QStringLiteral("javascript:alert(1)"));
     QVERIFY2(script.scheme() != QLatin1String("javascript"),

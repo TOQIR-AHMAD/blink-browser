@@ -7,8 +7,13 @@
 #ifndef PB_APP_APPLICATION_H
 #define PB_APP_APPLICATION_H
 
+#include "browser/browser_controller.h"
+#include "downloads/download_manager.h"
+#include "permissions/permission_manager.h"
 #include "privacy/core/blocking_stats.h"
 #include "privacy/core/session_paths.h"
+#include "privacy/privacy_manager.h"
+#include "settings/settings_controller.h"
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -23,24 +28,8 @@ QT_END_NAMESPACE
 namespace pb::chromium {
 class WebProfile;
 }
-namespace pb::browser {
-class BrowserController;
-}
-namespace pb::downloads {
-class DownloadManager;
-}
 namespace pb::network {
-class FilterService;
 class RequestInterceptor;
-}
-namespace pb::permissions {
-class PermissionManager;
-}
-namespace pb::privacy {
-class PrivacyManager;
-}
-namespace pb::settings {
-class SettingsController;
 }
 
 namespace pb::app {
@@ -51,7 +40,9 @@ class BrowserApplication : public QObject
     QML_ELEMENT
     QML_UNCREATABLE("Provided to QML as App")
 
+#ifdef PB_WEB_ENGINE
     Q_PROPERTY(QWebEngineProfile *profile READ webEngineProfile CONSTANT)
+#endif
     Q_PROPERTY(pb::settings::SettingsController *settings READ settings CONSTANT)
     Q_PROPERTY(pb::browser::BrowserController *browser READ browser CONSTANT)
     Q_PROPERTY(pb::privacy::PrivacyManager *privacy READ privacy CONSTANT)
@@ -76,7 +67,9 @@ public:
     // directory is gone.
     bool shutdown();
 
+#ifdef PB_WEB_ENGINE
     QWebEngineProfile *webEngineProfile() const;
+#endif
     pb::settings::SettingsController *settings() const { return m_settings; }
     pb::browser::BrowserController *browser() const { return m_browser; }
     pb::privacy::PrivacyManager *privacy() const { return m_privacy; }
@@ -107,9 +100,11 @@ private:
     pb::privacy::SessionPaths m_sessionPaths;
     pb::privacy::BlockingStats m_stats;
     pb::settings::SettingsController *m_settings = nullptr;
+#ifdef PB_WEB_ENGINE
     pb::chromium::WebProfile *m_webProfile = nullptr;
-    pb::network::FilterService *m_filters = nullptr;
     pb::network::RequestInterceptor *m_interceptor = nullptr;
+#endif
+    pb::network::FilterService *m_filters = nullptr;
     pb::privacy::PrivacyManager *m_privacy = nullptr;
     pb::permissions::PermissionManager *m_permissions = nullptr;
     pb::downloads::DownloadManager *m_downloads = nullptr;

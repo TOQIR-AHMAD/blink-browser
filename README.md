@@ -48,11 +48,17 @@ see. `docs/threat-model.md` says what this does not protect against.
 
 ## Status
 
-All ten phases of [`PLAN.md`](PLAN.md) are implemented. The Qt-free core and
-its 17 unit tests, plus the source-level privacy audit, **build and pass**. The
-Qt half — the application, the QML interface and the Qt-based tests — has
-**not been compiled yet**, because the development machine has no Qt 6 and its
-MSVC 2017 toolset is below Qt 6's floor. See "Build status" in
+All ten phases of [`PLAN.md`](PLAN.md) are implemented, and the application
+**builds and runs**: 21 tests pass, the window comes up, and it shuts down
+cleanly leaving no session directory behind.
+
+One caveat, and it is a big one: the build that has actually run was configured
+with `-DPB_WEB_ENGINE=OFF`, because Qt ships Qt WebEngine on Windows only for
+the MSVC toolchain and this machine has no MSVC 2022. That build is the whole
+browser — chrome, tabs, address bar, settings, dashboard, privacy models — with
+a placeholder where the page would render. **Everything that touches Chromium
+is therefore still unverified at runtime**: the off-the-record profile, request
+blocking, HTTPS-first, permissions and downloads. See "Build status" in
 [`docs/architecture.md`](docs/architecture.md).
 
 ## Build

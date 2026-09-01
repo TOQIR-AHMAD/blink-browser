@@ -121,12 +121,15 @@ void TabModel::moveTab(int from, int to)
     if (from == to || from < 0 || to < 0 || from >= count() || to >= count())
         return;
 
+    // Remember which tab is selected before the move: afterwards
+    // m_currentIndex points at whatever slid into that slot.
+    Tab *const current = currentTab();
+
     const int destination = to > from ? to + 1 : to;
     beginMoveRows(QModelIndex(), from, from, QModelIndex(), destination);
     m_tabs.move(from, to);
     endMoveRows();
 
-    Tab *current = currentTab();
     if (current) {
         const int index = m_tabs.indexOf(current);
         if (index != m_currentIndex) {

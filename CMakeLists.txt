@@ -25,6 +25,12 @@ option(PB_DEV_LOGGING "Allow developer-detail (host-level) logging" OFF)
 # turns it on in Settings > Advanced.
 option(PB_NETWORK_AUDIT "Compile in the network audit recorder" OFF)
 
+# Qt ships Qt WebEngine on Windows only for the MSVC toolchain. Turning this
+# off builds the whole browser except Chromium - the real interface on the real
+# models, with a placeholder where the page would be - which is the only build
+# possible with the MinGW Qt. A browser needs it ON.
+option(PB_WEB_ENGINE "Build with Qt WebEngine (Chromium)" ON)
+
 # ---------------------------------------------------------------------------
 # Global build settings
 # ---------------------------------------------------------------------------
@@ -45,14 +51,14 @@ endif()
 if(PB_BUILD_UI)
     # 6.8 is the floor because the browser uses the QWebEnginePermission API
     # introduced there, and because 6.8 is the current Qt LTS.
-    find_package(Qt6 6.8 REQUIRED COMPONENTS
-        Core
-        Gui
-        Network
-        Quick
-        QuickControls2
-        WebEngineQuick
-    )
+    set(PB_QT_COMPONENTS Core Gui Network Quick QuickControls2)
+    if(PB_BUILD_TESTS)
+        list(APPEND PB_QT_COMPONENTS Test)
+    endif()
+    if(PB_WEB_ENGINE)
+        list(APPEND PB_QT_COMPONENTS WebEngineQuick)
+    endif()
+    find_package(Qt6 6.8 REQUIRED COMPONENTS ${PB_QT_COMPONENTS})
     qt_standard_project_setup(REQUIRES 6.8)
 endif()
 
@@ -74,3 +80,4 @@ message(STATUS "  Qt/QML shell : ${PB_BUILD_UI}")
 message(STATUS "  Tests        : ${PB_BUILD_TESTS}")
 message(STATUS "  Dev logging  : ${PB_DEV_LOGGING}")
 message(STATUS "  Network audit: ${PB_NETWORK_AUDIT}")
+message(STATUS "  Web engine   : ${PB_WEB_ENGINE}")

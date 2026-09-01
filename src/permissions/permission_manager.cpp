@@ -3,7 +3,9 @@
 #include "privacy/core/blocking_stats.h"
 
 #include <QtCore/QVariantMap>
-#include <QtWebEngineCore/QWebEnginePermission>
+#ifdef PB_WEB_ENGINE
+#  include <QtWebEngineCore/QWebEnginePermission>
+#endif
 
 namespace pb::permissions {
 namespace {
@@ -118,6 +120,12 @@ PermissionManager::PermissionManager(pb::privacy::BlockingStats *stats, QObject 
 
 int PermissionManager::featureFromWebEngine(int permissionType) const
 {
+#ifndef PB_WEB_ENGINE
+    // Without a web engine nothing can ask for a capability; anything that
+    // claims to is refused.
+    Q_UNUSED(permissionType)
+    return UnknownFeature;
+#else
     using PermissionType = QWebEnginePermission::PermissionType;
     switch (static_cast<PermissionType>(permissionType)) {
     case PermissionType::MediaVideoCapture:
@@ -144,6 +152,7 @@ int PermissionManager::featureFromWebEngine(int permissionType) const
     // Includes MouseLock and anything a newer Qt adds: not recognised, so not
     // granted.
     return UnknownFeature;
+#endif
 }
 
 int PermissionManager::decisionFor(const QString &origin, int feature) const

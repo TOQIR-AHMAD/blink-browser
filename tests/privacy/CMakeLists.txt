@@ -16,11 +16,19 @@ if(NOT PB_BUILD_UI)
     return()
 endif()
 
+if(NOT PB_WEB_ENGINE)
+    message(STATUS "Built without Qt WebEngine; skipping the runtime persistence test")
+    return()
+endif()
+
 qt_add_executable(tst_persistence tst_persistence.cpp)
 
 target_link_libraries(tst_persistence PRIVATE
     PrivacyBrowser::Browser
     Qt6::Test
 )
+
+# Console subsystem, so the test's output reaches the terminal and CTest.
+set_target_properties(tst_persistence PROPERTIES WIN32_EXECUTABLE FALSE)
 
 add_test(NAME privacy_persistence COMMAND tst_persistence)
