@@ -25,6 +25,10 @@ bool endsWith(std::string_view value, std::string_view suffix);
 // True when `value` equals `suffix` or ends with "." + suffix.
 bool isSubdomainOf(std::string_view value, std::string_view suffix);
 
+// Percent-encodes everything outside the RFC 3986 unreserved set, so a search
+// term cannot break out of the query component of a URL.
+std::string percentEncode(std::string_view value);
+
 } // namespace pb::text
 
 #endif // PB_UTILS_TEXT_H

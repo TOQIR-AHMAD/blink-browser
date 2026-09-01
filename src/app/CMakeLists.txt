@@ -6,6 +6,7 @@ qt_add_executable(PrivacyBrowser
 # the PrivacyBrowser.Ui module available to the engine.
 target_link_libraries(PrivacyBrowser PRIVATE
     PrivacyBrowser::Browser
+    pb_browserplugin
     pb_uiplugin
 )
 

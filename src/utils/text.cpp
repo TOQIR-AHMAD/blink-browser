@@ -53,6 +53,25 @@ bool endsWith(std::string_view value, std::string_view suffix)
         && value.compare(value.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
+std::string percentEncode(std::string_view value)
+{
+    static constexpr char kHex[] = "0123456789ABCDEF";
+    std::string out;
+    out.reserve(value.size());
+    for (const unsigned char c : value) {
+        const bool unreserved = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+            || (c >= '0' && c <= '9') || c == '-' || c == '.' || c == '_' || c == '~';
+        if (unreserved) {
+            out.push_back(static_cast<char>(c));
+        } else {
+            out.push_back('%');
+            out.push_back(kHex[c >> 4]);
+            out.push_back(kHex[c & 0x0F]);
+        }
+    }
+    return out;
+}
+
 bool isSubdomainOf(std::string_view value, std::string_view suffix)
 {
     if (suffix.empty() || value.empty())

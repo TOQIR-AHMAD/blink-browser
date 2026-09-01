@@ -1,0 +1,80 @@
+! Title: Privacy Browser - built-in tracker list
+! Version: 1
+! Expires: never (this list ships with the browser and is not fetched)
+! License: same as this project
+!
+! This is a small, hand-written starter list of well-known analytics and
+! tracking endpoints, written for this project so that the browser blocks
+! something useful out of the box without redistributing a third-party list
+! under its own licence, and without fetching anything from a
+! developer-controlled server (PLAN.md 20, 21).
+!
+! It is deliberately conservative: only hosts whose entire purpose is
+! measurement, and only as third-party requests, so first-party analytics on a
+! site you are actually visiting is not caught by accident.
+!
+! For real coverage, add a maintained list (EasyPrivacy, EasyList) in
+! Settings > Privacy > Filter lists. The browser will tell you where it came
+! from and what fetching an update reveals to that list's host.
+
+! --- Analytics ---
+||google-analytics.com^$third-party
+||analytics.google.com^$third-party
+||googletagmanager.com^$third-party
+||googletagservices.com^$third-party
+||stats.g.doubleclick.net^$third-party
+||segment.io^$third-party
+||segment.com/analytics.js$third-party
+||cdn.segment.com^$third-party
+||mixpanel.com^$third-party
+||api.amplitude.com^$third-party
+||cdn.amplitude.com^$third-party
+||heap.io^$third-party
+||heapanalytics.com^$third-party
+||matomo.cloud^$third-party
+||quantserve.com^$third-party
+||scorecardresearch.com^$third-party
+||chartbeat.com^$third-party
+||parsely.com^$third-party
+||plausible.io/api/event$third-party
+||statcounter.com^$third-party
+||clicky.com^$third-party
+||mouseflow.com^$third-party
+||fullstory.com^$third-party
+||hotjar.com^$third-party
+||hotjar.io^$third-party
+||inspectlet.com^$third-party
+||logrocket.com^$third-party
+||smartlook.com^$third-party
+||crazyegg.com^$third-party
+||luckyorange.com^$third-party
+
+! --- Cross-site advertising and attribution beacons ---
+||facebook.com/tr$third-party
+||connect.facebook.net/en_US/fbevents.js$third-party
+||analytics.tiktok.com^$third-party
+||ads-twitter.com^$third-party
+||analytics.twitter.com^$third-party
+||snap.licdn.com^$third-party
+||px.ads.linkedin.com^$third-party
+||bat.bing.com^$third-party
+||branch.io^$third-party
+||adjust.com^$third-party
+||appsflyer.com^$third-party
+||kochava.com^$third-party
+||singular.net^$third-party
+
+! --- Error and session recorders that also carry page content ---
+||browser-intake-datadoghq.com^$third-party
+||sentry.io/api/$third-party
+||bugsnag.com^$third-party
+||raygun.io^$third-party
+||newrelic.com/accounts$third-party
+||js-agent.newrelic.com^$third-party
+||nr-data.net^$third-party
+
+! --- Common pixel and beacon paths, third-party only ---
+||*/pixel.gif$third-party,image
+||*/track.gif$third-party,image
+||*/beacon.js$third-party,script
+||*/telemetry$third-party,xmlhttprequest

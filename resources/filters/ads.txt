@@ -1,0 +1,59 @@
+! Title: Privacy Browser - built-in advertising list
+! Version: 1
+! Expires: never (this list ships with the browser and is not fetched)
+! License: same as this project
+!
+! A small hand-written starter list of advertising exchanges and tag servers,
+! written for this project rather than copied from a third-party list. It
+! blocks the request, which is what stops the tracking that comes with an ad;
+! it does not hide leftover page elements, because this browser does not
+! implement cosmetic filtering (see docs/blocking.md).
+!
+! Add EasyList in Settings > Privacy > Filter lists for real coverage.
+
+||doubleclick.net^$third-party
+||googlesyndication.com^$third-party
+||googleadservices.com^$third-party
+||adservice.google.com^$third-party
+||partner.googleadservices.com^$third-party
+||pagead2.googlesyndication.com^$third-party
+||adnxs.com^$third-party
+||adsrvr.org^$third-party
+||rubiconproject.com^$third-party
+||pubmatic.com^$third-party
+||openx.net^$third-party
+||criteo.com^$third-party
+||criteo.net^$third-party
+||taboola.com^$third-party
+||outbrain.com^$third-party
+||sharethrough.com^$third-party
+||smartadserver.com^$third-party
+||casalemedia.com^$third-party
+||indexww.com^$third-party
+||33across.com^$third-party
+||bidswitch.net^$third-party
+||sonobi.com^$third-party
+||districtm.io^$third-party
+||gumgum.com^$third-party
+||media.net^$third-party
+||yieldmo.com^$third-party
+||teads.tv^$third-party
+||adform.net^$third-party
+||adroll.com^$third-party
+||amazon-adsystem.com^$third-party
+||ads.yahoo.com^$third-party
+||advertising.com^$third-party
+||moatads.com^$third-party
+||serving-sys.com^$third-party
+||zedo.com^$third-party
+||revcontent.com^$third-party
+||mgid.com^$third-party
+||propellerads.com^$third-party
+||popads.net^$third-party
+||exoclick.com^$third-party
+||trafficjunky.net^$third-party
+
+! Common ad-slot paths, third-party only.
+||*/ad-server/$third-party
+||*/adframe.$third-party
+||*/banner-ad.$third-party

@@ -19,10 +19,11 @@
             "name": "windows-debug",
             "inherits": "base",
             "displayName": "Windows - Debug",
-            "description": "Developer build. Requires Qt 6.5+ and an MSVC developer shell.",
+            "description": "Developer build. Requires Qt 6.8+ and an MSVC developer shell.",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "PB_DEV_LOGGING": "ON"
+                "PB_DEV_LOGGING": "ON",
+                "PB_NETWORK_AUDIT": "ON"
             },
             "condition": {
                 "type": "equals",

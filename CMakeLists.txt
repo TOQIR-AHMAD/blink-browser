@@ -20,6 +20,11 @@ option(PB_BUILD_TESTS "Build the test suite" ON)
 # src/utils/logging.h.
 option(PB_DEV_LOGGING "Allow developer-detail (host-level) logging" OFF)
 
+# Compiles in the outbound-connection recorder from PLAN.md section 43. It is a
+# development tool: off in a release build, and off at runtime until the user
+# turns it on in Settings > Advanced.
+option(PB_NETWORK_AUDIT "Compile in the network audit recorder" OFF)
+
 # ---------------------------------------------------------------------------
 # Global build settings
 # ---------------------------------------------------------------------------
@@ -68,3 +73,4 @@ message(STATUS "PrivacyBrowser ${PROJECT_VERSION}")
 message(STATUS "  Qt/QML shell : ${PB_BUILD_UI}")
 message(STATUS "  Tests        : ${PB_BUILD_TESTS}")
 message(STATUS "  Dev logging  : ${PB_DEV_LOGGING}")
+message(STATUS "  Network audit: ${PB_NETWORK_AUDIT}")
